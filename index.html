@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym AI Receptionist Demo</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #0f0f0f; 
+            color: #ffffff; 
+            text-align: center; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+        .card { 
+            max-width: 500px; 
+            border: 2px solid #00ffcc; 
+            padding: 40px; 
+            border-radius: 20px; 
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.2); 
+        }
+        h1 { color: #00ffcc; margin-bottom: 10px; }
+        p { color: #aaaaaa; line-height: 1.5; }
+        .highlight { color: #00ffcc; font-weight: bold; margin-top: 20px; display: block; }
+    </style>
+
+    <!-- Vapi Web Widget Script -->
+    <script>
+      var vapiInstance = null;
+      const assistant = "61d207ff-2f1c-4026-8177-009d48fed794"; 
+      const apiKey = "6312920d-cbf7-4135-84b4-a860a296692b"; 
+
+      (function (d, s, id) {
+        var js, vjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+        js.defer = true;
+        js.onload = function () {
+          vapiInstance = window.vapiSDK.run({
+            apiKey: apiKey,
+            assistant: assistant,
+            config: {
+                mode: "voice" 
+            }
+          });
+        };
+        vjs.parentNode.insertBefore(js, vjs);
+      })(document, "script", "vapi-script");
+    </script>
+</head>
+<body>
+    <div class="card">
+        <h1>Meet Sam</h1>
+        <p>The 24/7 AI receptionist that handles bookings and questions so you can stay on the gym floor.</p>
+        <span class="highlight">Click the icon in the corner to start the demo.</span>
+    </div>
+</body>
+</html>
