@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iron Haven AI | Final Fix</title>
+    <title>Iron Haven AI | Final</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #000; color: #fff; overflow: hidden; display: flex; align-items: center; justify-content: center; height: 100vh; }
@@ -15,28 +15,24 @@
             background-size: cover; z-index: -1;
         }
 
-        /* NEON CALL BUTTON */
-        #sam-launcher {
+        /* THE BUTTON */
+        #sam-btn {
             background: #000; border: 2px solid #00ffcc;
             border-radius: 8px; padding: 18px 32px;
             cursor: pointer; display: flex; align-items: center; gap: 15px;
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
-            transition: all 0.3s ease;
-            opacity: 0.4; pointer-events: none; /* Locked until ready */
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
+            z-index: 9999;
         }
 
-        #sam-launcher.active { opacity: 1; pointer-events: auto; }
-        #sam-launcher:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(0, 255, 204, 0.5); }
-
         .dot { width: 12px; height: 12px; background: #00ffcc; border-radius: 50%; position: relative; }
-        .active .dot::after {
+        .dot::after {
             content: ""; position: absolute; width: 100%; height: 100%;
             background: #00ffcc; border-radius: 50%; animation: pulse 1.5s infinite;
         }
 
         @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
         
-        span { color: #00ffcc; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 1rem; }
+        span { color: #00ffcc; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
         .vapi-btn { display: none !important; }
     </style>
 </head>
@@ -44,53 +40,53 @@
 
     <div class="hero-bg"></div>
 
-    <div id="sam-launcher">
+    <div id="sam-btn" onclick="startCallNow()">
         <div class="dot"></div>
-        <span id="txt">Initializing Sam...</span>
+        <span id="btn-text">Talk with Sam</span>
     </div>
 
     <script>
         const ASSISTANT_ID = "61d207ff-2f1c-4026-8177-009d48fed794";
         const API_KEY = "6312920d-cbf7-4135-84b4-a860a296692b";
-        let vapi = null;
+        let vapiInstance = null;
 
-        // 1. Safe Script Loading
-        const script = document.createElement("script");
-        script.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
-        script.defer = true;
-        document.head.appendChild(script);
+        // Load the SDK
+        (function(d, s, id) {
+            var js, vjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+            js.onload = function() {
+                // Initialize Vapi immediately
+                vapiInstance = window.vapiSDK.run({
+                    apiKey: API_KEY,
+                    assistant: ASSISTANT_ID,
+                    config: { showConversation: true }
+                });
+            };
+            vjs.parentNode.insertBefore(js, vjs);
+        }(document, 'script', 'vapi-script'));
 
-        script.onload = () => {
-            vapi = window.vapiSDK.run({
-                apiKey: API_KEY,
-                assistant: ASSISTANT_ID,
-                config: { showConversation: true, brandColor: "#00ffcc" }
-            });
+        async function startCallNow() {
+            const btnText = document.getElementById("btn-text");
 
-            // 2. The Key: Wait for 'ready' before allowing the click
-            vapi.on('ready', () => {
-                const btn = document.getElementById("sam-launcher");
-                btn.classList.add("active");
-                document.getElementById("txt").innerText = "Talk with Sam";
-            });
-
-            // 3. Handle Call Events to prevent loops
-            vapi.on('call-start', () => {
-                document.getElementById("txt").innerText = "Sam is Active";
-            });
-
-            vapi.on('call-end', () => {
-                document.getElementById("txt").innerText = "Talk with Sam";
-            });
-        };
-
-        // 4. Single-Action Trigger
-        document.getElementById("sam-launcher").onclick = () => {
-            if (vapi) {
-                vapi.start(); // Initiates audio properly
-                vapi.openConversation(); // Shows the UI
+            // If the SDK isn't loaded yet, show "Connecting" and check again in a moment
+            if (!window.vapiSDK || !vapiInstance) {
+                btnText.innerText = "Connecting...";
+                setTimeout(startCallNow, 400); 
+                return;
             }
-        };
+
+            try {
+                // Force the call to start
+                await vapiInstance.start(); 
+                vapiInstance.openConversation(); 
+                btnText.innerText = "Sam Active";
+            } catch (err) {
+                console.error("Call failed:", err);
+                btnText.innerText = "Talk with Sam";
+            }
+        }
     </script>
 </body>
 </html>
