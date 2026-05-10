@@ -3,99 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iron Haven Fitness | AI Reception</title>
+    <title>Iron Haven AI | Final</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { 
-            background: #000; color: #fff; overflow: hidden; height: 100vh; 
-            display: flex; align-items: center; justify-content: center; 
-        }
-
-        /* BACKGROUND */
-        .hero-bg {
+        body { background: #000; color: #fff; overflow: hidden; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.9)), 
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), 
                         url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover; background-position: center; z-index: -1;
+            background-size: cover; z-index: -1;
         }
-
-        .hero-content { text-align: center; max-width: 700px; padding: 20px; }
-        h1 { font-size: 4rem; font-weight: 900; text-transform: uppercase; line-height: 1; margin-bottom: 15px; }
-        p { font-size: 1.2rem; color: #aaa; margin-bottom: 40px; }
-
-        /* THE ACTION BUTTON */
-        #sam-btn {
-            background: transparent; border: 2px solid #00ffcc; color: #00ffcc;
-            padding: 20px 45px; border-radius: 12px; font-size: 1.3rem; font-weight: 800;
-            text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; gap: 15px;
-            box-shadow: 0 0 25px rgba(0, 255, 204, 0.3); transition: all 0.3s;
-        }
-
-        #sam-btn:hover { background: #00ffcc; color: #000; box-shadow: 0 0 50px rgba(0, 255, 204, 0.6); transform: scale(1.05); }
-
-        .pulse-dot { width: 12px; height: 12px; background: currentColor; border-radius: 50%; position: relative; }
-        .pulse-dot::after {
-            content: ""; position: absolute; width: 100%; height: 100%; top: 0; left: 0;
-            background: currentColor; border-radius: 50%; animation: ring 1.5s infinite;
-        }
-
-        @keyframes ring { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
+        .content { text-align: center; z-index: 10; }
+        h1 { font-size: 4rem; text-transform: uppercase; margin-bottom: 10px; }
+        p { color: #aaa; margin-bottom: 30px; font-size: 1.1rem; }
         
-        /* HIDE NATIVE ELEMENTS */
+        /* SIMPLE NEON BUTTON */
+        #sam-btn {
+            background: #00ffcc; color: #000; border: none;
+            padding: 20px 40px; border-radius: 8px; font-size: 1.2rem;
+            font-weight: 900; cursor: pointer; text-transform: uppercase;
+            box-shadow: 0 0 30px rgba(0, 255, 204, 0.4);
+        }
+        #sam-btn:active { transform: scale(0.98); }
         .vapi-btn { display: none !important; }
     </style>
 </head>
 <body>
-
-    <div class="hero-bg"></div>
-
-    <div class="hero-content">
+    <div class="bg"></div>
+    <div class="content">
         <h1>Iron Haven</h1>
-        <p>Expert training, 24/7 access, and AI-powered support. <br>Click below to talk to Sam about memberships or booking a tour.</p>
-        
-        <button id="sam-btn" onclick="activateSam()">
-            <div class="pulse-dot"></div>
-            <span id="btn-label">Talk with Sam</span>
-        </button>
+        <p>Talk to Sam to book your tour instantly.</p>
+        <button id="sam-btn" onclick="startCall()">Talk with Sam</button>
     </div>
 
     <script>
-        const ASSISTANT_ID = "61d207ff-2f1c-4026-8177-009d48fed794";
-        const API_KEY = "6312920d-cbf7-4135-84b4-a860a296692b";
-        let vapi = null;
+        // 1. WE ONLY LOAD THE SCRIPT - WE DON'T RUN ANYTHING YET
+        const s = document.createElement("script");
+        s.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+        document.head.appendChild(s);
 
-        // Load the external script
-        (function() {
-            const s = document.createElement("script");
-            s.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
-            document.head.appendChild(s);
-        })();
-
-        async function activateSam() {
-            const label = document.getElementById("btn-label");
-
+        async function startCall() {
+            const btn = document.getElementById("sam-btn");
+            
             if (!window.vapiSDK) {
-                label.innerText = "Loading AI...";
-                setTimeout(activateSam, 500);
+                btn.innerText = "LOADING...";
+                setTimeout(startCall, 500);
                 return;
             }
 
-            if (!vapi) {
-                vapi = window.vapiSDK.run({
-                    apiKey: API_KEY,
-                    assistant: ASSISTANT_ID,
-                    config: { showConversation: true, brandColor: "#00ffcc" }
-                });
-            }
+            // 2. THE HANDSHAKE ONLY HAPPENS ON THE CLICK
+            const vapi = window.vapiSDK.run({
+                apiKey: "6312920d-cbf7-4135-84b4-a860a296692b",
+                assistant: "61d207ff-2f1c-4026-8177-009d48fed794",
+                config: { showConversation: true }
+            });
 
             try {
-                label.innerText = "Connecting...";
-                await vapi.start(); // Trigger mic request
+                btn.innerText = "CONNECTING...";
+                await vapi.start(); // THIS TRIGGERS THE BROWSER MIC PROMPT
                 vapi.openConversation();
-                label.innerText = "Sam Active";
-            } catch (err) {
-                label.innerText = "Talk with Sam";
-                console.error("Connection failed:", err);
+                btn.innerText = "SAM IS LIVE";
+            } catch (e) {
+                btn.innerText = "TRY AGAIN";
             }
         }
     </script>
