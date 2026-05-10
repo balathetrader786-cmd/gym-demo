@@ -1,60 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iron Haven AI | Fixed</title>
+    <title>Iron Haven Final</title>
     <script src="https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #000; color: #fff; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .hero { position: absolute; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.8), #000), url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070'); background-size: cover; z-index: -1; }
-        .box { text-align: center; }
-        h1 { font-size: 3.5rem; margin-bottom: 10px; font-weight: 900; text-transform: uppercase; }
-        p { color: #aaa; margin-bottom: 30px; font-size: 1.1rem; }
-        
-        #sam-btn {
-            background: #00ffcc; color: #000; border: none; padding: 25px 50px;
-            font-size: 1.5rem; font-weight: bold; border-radius: 50px; cursor: pointer;
-            box-shadow: 0 0 30px rgba(0, 255, 204, 0.5); transition: 0.3s;
-        }
-        #sam-btn:active { transform: scale(0.95); }
+        body { background: #000; color: #fff; height: 100vh; display: flex; align-items: center; justify-content: center; font-family: sans-serif; text-align: center; }
+        #sam-btn { background: #00ffcc; border: none; padding: 30px 60px; font-size: 1.5rem; font-weight: bold; border-radius: 50px; cursor: pointer; }
         .vapi-btn { display: none !important; }
     </style>
 </head>
 <body>
-    <div class="hero"></div>
-    <div class="box">
-        <h1>IRON HAVEN</h1>
-        <p>Expert training, 24/7 access, and AI-powered support.</p>
-        <button id="sam-btn" onclick="startSam()">TALK WITH SAM</button>
+    <div>
+        <h1 style="margin-bottom: 20px;">IRON HAVEN</h1>
+        <button id="sam-btn" onclick="go()">START CALL</button>
     </div>
 
     <script>
-        async function startSam() {
+        async function go() {
             const btn = document.getElementById("sam-btn");
             btn.innerText = "CONNECTING...";
-
-            if (!window.vapiSDK) {
-                alert("AI still loading, please wait 3 seconds and try again.");
-                btn.innerText = "TALK WITH SAM";
-                return;
-            }
-
             try {
-                // Initialize ONLY on click to satisfy browser security
-                const vapi = window.vapiSDK.run({
+                const v = window.vapiSDK.run({
                     apiKey: "6312920d-cbf7-4135-84b4-a860a296692b",
                     assistant: "61d207ff-2f1c-4026-8177-009d48fed794"
                 });
-
-                await vapi.start();
-                btn.innerText = "SAM IS LIVE";
-            } catch (err) {
-                console.error(err);
-                btn.innerText = "TRY AGAIN";
-                // This alert forces the user to interact, which can help reset the mic block
-                alert("The browser is still blocking your mic. Please click the 'Lock' icon next to the URL, click 'Reset Permission', then reload the page!");
+                await v.start();
+                btn.innerText = "LIVE";
+            } catch (e) {
+                btn.innerText = "DENIED - RESET MIC";
+                alert("STILL BLOCKED: Click the LOCK icon in your URL bar, RESET permissions, and RELOAD the page.");
             }
         }
     </script>
