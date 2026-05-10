@@ -5,57 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iron Haven Fitness | AI Reception</title>
     <style>
-        /* RESET & BASE STYLES */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #000; color: #fff; overflow: hidden; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { 
+            background: #000; color: #fff; overflow: hidden; height: 100vh; 
+            display: flex; align-items: center; justify-content: center; 
+        }
 
-        /* THE BACKGROUND */
-        .bg {
+        /* BACKGROUND */
+        .hero-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), 
+            background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.9)), 
                         url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop');
             background-size: cover; background-position: center; z-index: -1;
         }
 
-        .container { text-align: center; max-width: 600px; padding: 20px; }
-        h1 { font-size: 3.5rem; font-weight: 900; letter-spacing: -1px; margin-bottom: 10px; text-transform: uppercase; }
-        p { font-size: 1.2rem; color: #ccc; margin-bottom: 40px; line-height: 1.5; }
+        .hero-content { text-align: center; max-width: 700px; padding: 20px; }
+        h1 { font-size: 4rem; font-weight: 900; text-transform: uppercase; line-height: 1; margin-bottom: 15px; }
+        p { font-size: 1.2rem; color: #aaa; margin-bottom: 40px; }
 
-        /* THE SAM BUTTON */
+        /* THE ACTION BUTTON */
         #sam-btn {
-            display: inline-flex; align-items: center; gap: 15px;
             background: transparent; border: 2px solid #00ffcc; color: #00ffcc;
-            padding: 20px 40px; border-radius: 10px; font-size: 1.2rem; font-weight: 800;
-            text-transform: uppercase; cursor: pointer; transition: all 0.3s;
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+            padding: 20px 45px; border-radius: 12px; font-size: 1.3rem; font-weight: 800;
+            text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; gap: 15px;
+            box-shadow: 0 0 25px rgba(0, 255, 204, 0.3); transition: all 0.3s;
         }
 
-        #sam-btn:hover { background: #00ffcc; color: #000; box-shadow: 0 0 40px rgba(0, 255, 204, 0.5); transform: translateY(-3px); }
-        #sam-btn:active { transform: translateY(0); }
+        #sam-btn:hover { background: #00ffcc; color: #000; box-shadow: 0 0 50px rgba(0, 255, 204, 0.6); transform: scale(1.05); }
 
-        .pulse { width: 12px; height: 12px; background: currentColor; border-radius: 50%; position: relative; }
-        .pulse::after {
+        .pulse-dot { width: 12px; height: 12px; background: currentColor; border-radius: 50%; position: relative; }
+        .pulse-dot::after {
             content: ""; position: absolute; width: 100%; height: 100%; top: 0; left: 0;
-            background: currentColor; border-radius: 50%; animation: pulse-ring 1.5s infinite;
+            background: currentColor; border-radius: 50%; animation: ring 1.5s infinite;
         }
 
-        @keyframes pulse-ring { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
-
-        /* ENSURE VAPI NATIVE UI IS HIDDEN */
+        @keyframes ring { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
+        
+        /* HIDE NATIVE ELEMENTS */
         .vapi-btn { display: none !important; }
     </style>
 </head>
 <body>
 
-    <div class="bg"></div>
+    <div class="hero-bg"></div>
 
-    <div class="container">
+    <div class="hero-content">
         <h1>Iron Haven</h1>
-        <p>Your 24/7 AI Receptionist is ready. No forms, no waiting—just talk to Sam to book your tour or ask about memberships.</p>
+        <p>Expert training, 24/7 access, and AI-powered support. <br>Click below to talk to Sam about memberships or booking a tour.</p>
         
-        <button id="sam-btn" onclick="startSam()">
-            <div class="pulse"></div>
-            <span id="btn-text">Talk with Sam</span>
+        <button id="sam-btn" onclick="activateSam()">
+            <div class="pulse-dot"></div>
+            <span id="btn-label">Talk with Sam</span>
         </button>
     </div>
 
@@ -64,19 +64,19 @@
         const API_KEY = "6312920d-cbf7-4135-84b4-a860a296692b";
         let vapi = null;
 
-        // Load SDK silently
+        // Load the external script
         (function() {
             const s = document.createElement("script");
             s.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
             document.head.appendChild(s);
         })();
 
-        async function startSam() {
-            const btnText = document.getElementById("btn-text");
+        async function activateSam() {
+            const label = document.getElementById("btn-label");
 
             if (!window.vapiSDK) {
-                btnText.innerText = "Loading AI...";
-                setTimeout(startSam, 500);
+                label.innerText = "Loading AI...";
+                setTimeout(activateSam, 500);
                 return;
             }
 
@@ -84,19 +84,18 @@
                 vapi = window.vapiSDK.run({
                     apiKey: API_KEY,
                     assistant: ASSISTANT_ID,
-                    config: { showConversation: true }
+                    config: { showConversation: true, brandColor: "#00ffcc" }
                 });
             }
 
             try {
-                btnText.innerText = "Connecting...";
-                await vapi.start();
+                label.innerText = "Connecting...";
+                await vapi.start(); // Trigger mic request
                 vapi.openConversation();
-                btnText.innerText = "Sam is Live";
+                label.innerText = "Sam Active";
             } catch (err) {
-                console.error("Mic access error:", err);
-                btnText.innerText = "Talk with Sam";
-                alert("Please click 'Allow' on the microphone prompt to talk to Sam.");
+                label.innerText = "Talk with Sam";
+                console.error("Connection failed:", err);
             }
         }
     </script>
