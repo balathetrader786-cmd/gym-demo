@@ -3,49 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iron Haven AI | Instant Launch</title>
+    <title>Iron Haven AI | Final Fix</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #000; color: #fff; overflow: hidden; display: flex; align-items: center; justify-content: center; height: 100vh; }
-
-        /* THE BACKGROUND IMAGE */
         .hero-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), 
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), 
                         url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop');
             background-size: cover; z-index: -1;
         }
-
         /* THE NEON BUTTON */
         #sam-launcher {
             background: #000; border: 2px solid #00ffcc;
             border-radius: 8px; padding: 18px 35px;
             cursor: pointer; display: flex; align-items: center; gap: 15px;
             box-shadow: 0 0 25px rgba(0, 255, 204, 0.4);
-            z-index: 9999; transition: transform 0.2s;
+            z-index: 9999;
         }
-
-        #sam-launcher:active { transform: scale(0.95); }
-
         .dot { width: 12px; height: 12px; background: #00ffcc; border-radius: 50%; position: relative; }
         .dot::after {
             content: ""; position: absolute; width: 100%; height: 100%;
             background: #00ffcc; border-radius: 50%; animation: pulse 1.5s infinite;
         }
-
         @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
-        
         span { color: #00ffcc; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; font-size: 1.1rem; }
-        
-        /* HIDE THE BROKEN BAR */
         .vapi-btn { display: none !important; }
     </style>
 </head>
 <body>
-
     <div class="hero-bg"></div>
 
-    <div id="sam-launcher" onclick="launchCall()">
+    <div id="sam-launcher" onclick="forceStartSam()">
         <div class="dot"></div>
         <span id="btn-text">Talk with Sam</span>
     </div>
@@ -53,42 +42,43 @@
     <script>
         const ASSISTANT_ID = "61d207ff-2f1c-4026-8177-009d48fed794";
         const API_KEY = "6312920d-cbf7-4135-84b4-a860a296692b";
-        let sam = null;
+        let vapiInstance = null;
 
-        // Load the library instantly
-        (function() {
-            const s = document.createElement("script");
-            s.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
-            s.onload = () => {
-                // Initialize silently in the background
-                sam = window.vapiSDK.run({
-                    apiKey: API_KEY,
-                    assistant: ASSISTANT_ID,
-                    config: { showConversation: true, brandColor: "#00ffcc" }
-                });
-            };
-            document.head.appendChild(s);
-        })();
+        // 1. Load the SDK immediately
+        const script = document.createElement("script");
+        script.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+        script.onload = () => { console.log("SDK Loaded"); };
+        document.head.appendChild(script);
 
-        // THE FORCE-START FUNCTION
-        async function launchCall() {
+        async function forceStartSam() {
             const text = document.getElementById("btn-text");
             
-            if (!window.vapiSDK || !sam) {
-                text.innerText = "Connecting...";
-                setTimeout(launchCall, 300); // Check again every 300ms if script is slow
+            // 2. If SDK isn't ready, initialize it now
+            if (!window.vapiSDK) {
+                text.innerText = "Loading AI...";
+                setTimeout(forceStartSam, 500);
                 return;
             }
 
+            if (!vapiInstance) {
+                vapiInstance = window.vapiSDK.run({
+                    apiKey: API_KEY,
+                    assistant: ASSISTANT_ID,
+                    config: { showConversation: true }
+                });
+            }
+
+            // 3. Force the connection and open the UI
             try {
-                // 1. Force Open the UI
-                sam.openConversation(); 
-                // 2. Force Wake Up the Mic
-                await sam.start(); 
+                text.innerText = "Connecting...";
+                await vapiInstance.start(); 
+                vapiInstance.openConversation();
                 text.innerText = "Sam Active";
             } catch (err) {
+                // If it fails because of permissions, alert the user
+                console.error(err);
                 text.innerText = "Talk with Sam";
-                console.log("Waiting for mic permission...");
+                alert("Please check your mic permissions in the browser bar!");
             }
         }
     </script>
