@@ -12,60 +12,55 @@
         body { background: #000; color: #fff; overflow-x: hidden; }
 
         .hero {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 100vh;
-            padding: 0 8%;
+            display: flex; align-items: center; justify-content: space-between;
+            height: 100vh; padding: 0 8%;
             background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), 
                         url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
+            background-size: cover; background-position: center;
         }
 
         .content { flex: 1; max-width: 50%; }
-        h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
-        p { font-size: 1.1rem; color: #ccc; margin-bottom: 30px; }
+        h1 { font-size: 3.8rem; font-weight: 800; line-height: 1.1; margin-bottom: 25px; }
+        p { font-size: 1.1rem; color: #d1d1d1; margin-bottom: 40px; }
         
-        .form-box {
-            flex: 0 0 380px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 12px;
-            padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .form-container {
+            flex: 0 0 400px; background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(12px); border-radius: 12px;
+            padding: 40px; border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        /* THE SAM BUTTON */
-        #sam-btn {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            background: #000;
-            border: 2px solid #00ffcc;
-            border-radius: 6px;
-            padding: 12px 20px;
-            z-index: 10000;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+        /* FORCING THE AI BUTTON TO BE SQUARE AND REMOVE CALL ICON */
+        /* This targets the official Vapi button directly */
+        .vapi-btn {
+            border-radius: 4px !important; /* Square edges like Duda */
+            background-color: #000 !important;
+            border: 2px solid #00ffcc !important;
+            bottom: 30px !important;
+            right: 30px !important;
+            width: auto !important;
+            height: auto !important;
+            padding: 12px 24px !important;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4) !important;
         }
 
-        .dot { height: 8px; width: 8px; background: #00ffcc; border-radius: 50%; animation: blink 1.5s infinite; }
-        @keyframes blink { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
-        
-        #sam-btn span { color: #00ffcc; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+        /* Removes the phone icon so it is "just AI" */
+        .vapi-btn-icon, .vapi-btn svg {
+            display: none !important;
+        }
 
-        /* HIDE VAPI OVERLAYS */
-        .vapi-btn, [class*="vapi-"] { display: none !important; }
+        /* Styles the "TALK WITH AI" text */
+        .vapi-btn-text {
+            color: #00ffcc !important;
+            font-weight: 800 !important;
+            font-size: 0.9rem !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            margin: 0 !important;
+        }
 
-        @media (max-width: 900px) {
-            .hero { flex-direction: column; padding: 80px 5%; text-align: center; height: auto; }
-            .content { max-width: 100%; margin-bottom: 40px; }
-            h1 { font-size: 2.2rem; }
-            .form-box { width: 100%; }
+        @media (max-width: 1000px) {
+            .hero { flex-direction: column; padding: 100px 5%; text-align: center; height: auto; }
+            .content { max-width: 100%; margin-bottom: 50px; }
         }
     </style>
 </head>
@@ -73,48 +68,43 @@
 
     <div class="hero">
         <div class="content">
-            <h1>24/7 AI <br>Gym Assistant</h1>
-            <p>Sam is online. Click the button to book a tour or check membership prices instantly via voice.</p>
+            <h1>24/7 AI <br>Receptionist</h1>
+            <p>Our AI Concierge is ready to help. Click the button in the corner to book your tour or ask about membership.</p>
         </div>
 
-        <div class="form-box">
-            <h2 style="margin-bottom:15px;">Get Started</h2>
-            <input type="text" placeholder="Name" style="width:100%; padding:12px; margin-bottom:10px; background:rgba(255,255,255,0.1); border:none; border-radius:4px; color:#fff;">
-            <button style="width:100%; padding:14px; background:#00ffcc; color:#000; font-weight:bold; border:none; border-radius:4px; cursor:pointer;">REQUEST INFO</button>
+        <div class="form-container">
+            <h2 style="margin-bottom:20px;">Get Started</h2>
+            <form onsubmit="event.preventDefault();">
+                <input type="text" placeholder="Full Name" style="width:100%; padding:15px; margin-bottom:15px; border-radius:5px; border:1px solid #444; background:transparent; color:#fff;">
+                <button type="submit" style="width:100%; padding:15px; background:#00ffcc; color:#000; font-weight:bold; border:none; border-radius:4px; cursor:pointer;">REQUEST INFO</button>
+            </form>
         </div>
     </div>
 
-    <button id="sam-btn">
-        <div class="dot"></div>
-        <span>Talk with Sam</span>
-    </button>
-
-    <script src="https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js"></script>
-
     <script>
-      const assistant = "61d207ff-2f1c-4026-8177-009d48fed794"; 
-      const apiKey = "6312920d-cbf7-4135-84b4-a860a296692b"; 
-      let vapi = null;
+      const assistantID = "61d207ff-2f1c-4026-8177-009d48fed794"; 
+      const publicAPIKey = "6312920d-cbf7-4135-84b4-a860a296692b"; 
 
-      // Initialize properly
-      window.addEventListener('load', function() {
-          vapi = window.vapiSDK.run({
-              apiKey: apiKey,
-              assistant: assistant,
-              config: { showConversation: true }
+      (function (d, s, id) {
+        var js, vjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+        js.defer = true;
+        js.onload = function () {
+          window.vapiSDK.run({
+            apiKey: publicAPIKey,
+            assistant: assistantID,
+            config: { 
+                mode: "voice",
+                showConversation: true, // Opens the window inside the page
+                buttonText: "TALK WITH AI" // The label for your button
+            }
           });
-      });
-
-      // THE MOBILE-FRIENDLY CLICK
-      document.getElementById('sam-btn').onclick = function() {
-          if (vapi) {
-              console.log("Opening Sam...");
-              vapi.openConversation(); // This triggers the window
-              vapi.start();           // This starts the audio
-          } else {
-              alert("Wait a second—Sam is still waking up!");
-          }
-      };
+        };
+        vjs.parentNode.insertBefore(js, vjs);
+      })(document, "script", "vapi-script");
     </script>
+
 </body>
 </html>
