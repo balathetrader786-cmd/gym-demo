@@ -35,7 +35,7 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        /* FIXED AI BUTTON - NO LONGER BLANK */
+        /* AI BUTTON STYLING (MATCHES YOUR PIC) */
         #ai-voice-trigger {
             position: fixed;
             bottom: 30px;
@@ -43,7 +43,7 @@
             background: #000;
             border: 2px solid #00ffcc;
             border-radius: 8px;
-            padding: 15px 25px;
+            padding: 12px 24px;
             z-index: 10000;
             cursor: pointer;
             display: flex;
@@ -53,14 +53,11 @@
             transition: all 0.3s ease;
         }
 
-        /* GLOWING ANIMATION */
         .pulse-dot {
             height: 10px;
             width: 10px;
             background-color: #00ffcc;
             border-radius: 50%;
-            display: inline-block;
-            box-shadow: 0 0 0 0 rgba(0, 255, 204, 0.7);
             animation: pulse 1.5s infinite;
         }
 
@@ -74,12 +71,11 @@
             color: #00ffcc;
             font-weight: 800;
             font-size: 0.9rem;
-            letter-spacing: 1px;
             text-transform: uppercase;
         }
 
-        /* HIDE DEFAULT VAPI ICON */
-        .vapi-btn { display: none !important; }
+        /* HIDDEN DEFAULT ICON */
+        .vapi-btn { display: none !important; visibility: hidden !important; }
 
         @media (max-width: 1000px) {
             .hero { flex-direction: column; padding: 100px 5%; text-align: center; }
@@ -99,21 +95,35 @@
         <div class="form-container">
             <h2>Get Started</h2>
             <form onsubmit="event.preventDefault();">
-                <input type="text" style="width:100%; padding:15px; margin:10px 0; border-radius:5px; border:none;" placeholder="Full Name">
-                <button type="submit" style="width:100%; padding:15px; background:#00ffcc; font-weight:bold; border:none; border-radius:5px; cursor:pointer;">REQUEST INFO</button>
+                <input type="text" style="width:100%; padding:15px; margin:10px 0; border-radius:5px; border:1px solid #444; background:transparent; color:#fff;" placeholder="Full Name">
+                <button type="submit" style="width:100%; padding:15px; background:#00ffcc; font-weight:bold; border:none; border-radius:5px; cursor:pointer; color:#000;">REQUEST INFO</button>
             </form>
         </div>
     </div>
 
-    <div id="ai-voice-trigger" onclick="vapiInstance.openConversation()">
-        <span class="pulse-dot"></span>
-        <span>Talk to Sam (AI)</span>
+    <div id="ai-voice-trigger" onclick="safeOpenVapi()">
+        <div class="pulse-dot"></div>
+        <span id="btn-label">Talk to Sam (AI)</span>
     </div>
 
     <script>
       var vapiInstance = null;
       const assistant = "61d207ff-2f1c-4026-8177-009d48fed794"; 
       const apiKey = "6312920d-cbf7-4135-84b4-a860a296692b"; 
+
+      // Function to ensure the window opens correctly
+      function safeOpenVapi() {
+          const label = document.getElementById('btn-label');
+          if (vapiInstance) {
+              vapiInstance.openConversation();
+          } else {
+              label.innerText = "Waking up Sam...";
+              setTimeout(() => {
+                  if(vapiInstance) vapiInstance.openConversation();
+                  label.innerText = "Talk to Sam (AI)";
+              }, 2000);
+          }
+      }
 
       (function (d, s, id) {
         var js, vjs = d.getElementsByTagName(s)[0];
