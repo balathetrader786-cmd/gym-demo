@@ -6,10 +6,10 @@
     <title>Iron Haven Fitness | AI Receptionist</title>
     <link rel="icon" href="https://www.tmplclubs.com/favicon.ico">
     <style>
-        /* RESET & BASE THEME */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #000; color: #fff; overflow: hidden; }
 
+        /* GYM HERO SECTION */
         .hero {
             display: flex; align-items: center; justify-content: space-between;
             height: 100vh; padding: 0 8%;
@@ -19,7 +19,7 @@
         }
 
         .content { flex: 1; max-width: 55%; }
-        h1 { font-size: 3.5rem; font-weight: 900; line-height: 1.1; margin-bottom: 20px; color: #fff; }
+        h1 { font-size: 3.5rem; font-weight: 900; line-height: 1.1; margin-bottom: 20px; }
         p { font-size: 1.1rem; color: #aaa; margin-bottom: 30px; line-height: 1.6; }
         
         .form-box {
@@ -28,37 +28,37 @@
             padding: 35px; border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* THE TRIGGER BUTTON (REPLACING THE BLANK SPACE) */
-        #ai-call-btn {
+        /* THE CUSTOM "TALK WITH SAM" BUTTON */
+        #sam-trigger {
             position: fixed; bottom: 30px; right: 30px;
             background: #000; border: 2px solid #00ffcc;
             border-radius: 8px; padding: 15px 25px;
-            cursor: pointer; z-index: 1000;
+            cursor: pointer; z-index: 9999;
             display: flex; align-items: center; gap: 12px;
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
-            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
+            transition: 0.3s;
         }
 
-        #ai-call-btn:hover { transform: translateY(-3px); box-shadow: 0 0 30px rgba(0, 255, 204, 0.5); }
+        #sam-trigger:hover { transform: translateY(-3px); box-shadow: 0 0 30px rgba(0, 255, 204, 0.6); }
 
-        .pulse {
-            width: 10px; height: 10px; background: #00ffcc;
+        .pulse-dot {
+            width: 12px; height: 12px; background: #00ffcc;
             border-radius: 50%; position: relative;
         }
-        .pulse::after {
+        .pulse-dot::after {
             content: ""; position: absolute; width: 100%; height: 100%;
             background: #00ffcc; border-radius: 50%;
-            animation: ripple 1.5s infinite;
+            animation: pulse-ring 1.5s infinite;
         }
 
-        @keyframes ripple {
+        @keyframes pulse-ring {
             0% { transform: scale(1); opacity: 1; }
             100% { transform: scale(3); opacity: 0; }
         }
 
-        #ai-call-btn span { color: #00ffcc; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; }
+        #sam-trigger span { color: #00ffcc; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; }
 
-        /* HIDE DEFAULT VAPI UI UNTIL CLICKED */
+        /* HIDE THE BROKEN BLANK VAPI BUTTON */
         .vapi-btn { display: none !important; }
 
         @media (max-width: 1000px) {
@@ -73,39 +73,38 @@
     <div class="hero">
         <div class="content">
             <h1>Iron Haven AI <br>Receptionist</h1>
-            <p>Sam is here to handle your gym bookings, membership questions, and tour schedules instantly via voice. No typing needed.</p>
+            <p>Sam is live and ready to handle your bookings and membership questions instantly via voice. Click below to start the call.</p>
         </div>
 
         <div class="form-box">
             <h2 style="margin-bottom:20px;">Get Started</h2>
-            <input type="text" placeholder="Name" style="width:100%; padding:14px; margin-bottom:12px; background:rgba(255,255,255,0.08); border:none; border-radius:6px; color:#fff;">
+            <input type="text" placeholder="Full Name" style="width:100%; padding:14px; margin-bottom:12px; background:rgba(255,255,255,0.08); border:none; border-radius:6px; color:#fff;">
             <button style="width:100%; padding:15px; background:#00ffcc; color:#000; font-weight:900; border:none; border-radius:6px; cursor:pointer; text-transform: uppercase;">Request Info</button>
         </div>
     </div>
 
-    <div id="ai-call-btn" onclick="startSam()">
-        <div class="pulse"></div>
+    <div id="sam-trigger" onclick="launchCall()">
+        <div class="pulse-dot"></div>
         <span>Talk with Sam</span>
     </div>
 
     <script>
-      let vapiInstance = null;
+      let vapi = null;
       const assistant = "61d207ff-2f1c-4026-8177-009d48fed794"; 
       const apiKey = "6312920d-cbf7-4135-84b4-a860a296692b"; 
 
-      // Load Vapi
+      // Load the script normally (no defer) to ensure it's ready
       (function (d, s, id) {
         var js, vjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;
         js = d.createElement(s); js.id = id;
         js.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
-        js.defer = true;
         js.onload = function () {
-          vapiInstance = window.vapiSDK.run({
+          vapi = window.vapiSDK.run({
             apiKey: apiKey,
             assistant: assistant,
             config: { 
-                showConversation: true,
+                showConversation: true, // Forces the call window
                 brandColor: "#00ffcc"
             }
           });
@@ -113,12 +112,14 @@
         vjs.parentNode.insertBefore(js, vjs);
       })(document, "script", "vapi-script");
 
-      // THE CLICK HANDLER
-      function startSam() {
-          if (vapiInstance) {
-              vapiInstance.openConversation(); // This forces the "Call Scenario" window to open
+      // THE KILL-HEADACHE FUNCTION
+      function launchCall() {
+          if (vapi) {
+              console.log("Starting Sam...");
+              vapi.openConversation(); // Opens the white UI window
+              vapi.start();           // Activates the microphone immediately
           } else {
-              console.log("Vapi not ready yet...");
+              alert("Sam is still initializing. Give it 2 seconds!");
           }
       }
     </script>
