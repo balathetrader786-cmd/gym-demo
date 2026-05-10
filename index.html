@@ -6,13 +6,13 @@
     <title>Iron Haven AI | Fixed</title>
     <script src="https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #000; color: #fff; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .hero { position: absolute; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.8), #000), url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070'); background-size: cover; z-index: -1; }
         .box { text-align: center; }
-        h1 { font-size: 3.5rem; margin-bottom: 20px; font-weight: 900; text-transform: uppercase; }
+        h1 { font-size: 3.5rem; margin-bottom: 10px; font-weight: 900; text-transform: uppercase; }
+        p { color: #aaa; margin-bottom: 30px; font-size: 1.1rem; }
         
-        /* CLEAN NEON BUTTON */
         #sam-btn {
             background: #00ffcc; color: #000; border: none; padding: 25px 50px;
             font-size: 1.5rem; font-weight: bold; border-radius: 50px; cursor: pointer;
@@ -26,7 +26,8 @@
     <div class="hero"></div>
     <div class="box">
         <h1>IRON HAVEN</h1>
-        <button id="sam-btn" onclick="startSam()">TALK TO SAM</button>
+        <p>Expert training, 24/7 access, and AI-powered support.</p>
+        <button id="sam-btn" onclick="startSam()">TALK WITH SAM</button>
     </div>
 
     <script>
@@ -35,13 +36,13 @@
             btn.innerText = "CONNECTING...";
 
             if (!window.vapiSDK) {
-                btn.innerText = "LOADING AI...";
-                setTimeout(startSam, 1000);
+                alert("AI still loading, please wait 3 seconds and try again.");
+                btn.innerText = "TALK WITH SAM";
                 return;
             }
 
             try {
-                // RUN ON CLICK TO SATISFY BROWSER PERMISSIONS
+                // Initialize ONLY on click to satisfy browser security
                 const vapi = window.vapiSDK.run({
                     apiKey: "6312920d-cbf7-4135-84b4-a860a296692b",
                     assistant: "61d207ff-2f1c-4026-8177-009d48fed794"
@@ -52,8 +53,8 @@
             } catch (err) {
                 console.error(err);
                 btn.innerText = "TRY AGAIN";
-                // FORCE THE USER TO SEE THE RELOAD REQUIREMENT
-                alert("Microphone denied. Please click the RELOAD button at the top of your browser!");
+                // This alert forces the user to interact, which can help reset the mic block
+                alert("The browser is still blocking your mic. Please click the 'Lock' icon next to the URL, click 'Reset Permission', then reload the page!");
             }
         }
     </script>
