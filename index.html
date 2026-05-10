@@ -59,34 +59,23 @@
             cursor: pointer;
         }
 
-        /* SQUARE AI BUTTON (Duda Style) */
-        #custom-ai-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #000;
-            border: 2px solid #00ffcc;
-            border-radius: 4px;
-            padding: 12px 24px;
-            z-index: 99999;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-        #custom-ai-btn:active { transform: scale(0.95); }
-        #custom-ai-btn span {
-            color: #00ffcc;
-            font-weight: 800;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        /* STYLING THE VAPI BUTTON TO MATCH THE DUDA IMAGE */
+        /* We are targeting the actual Vapi widget classes directly now */
+        .vapi-btn {
+            border-radius: 4px !important; /* Makes it square like the screenshot */
+            background-color: #000 !important;
+            border: 2px solid #00ffcc !important;
+            bottom: 30px !important;
+            right: 30px !important;
+            width: auto !important;
+            height: auto !important;
+            padding: 12px 24px !important;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4) !important;
         }
 
-        /* FORCE HIDE DEFAULT VAPI ICON */
-        .vapi-btn, [class*="vapi-"] { display: none !important; visibility: hidden !important; }
+        .vapi-btn-icon {
+            display: none !important; /* Removes the phone icon you wanted gone */
+        }
 
         @media (max-width: 1000px) {
             .hero { flex-direction: column; height: auto; padding: 100px 5%; text-align: center; }
@@ -94,6 +83,31 @@
             .form-container { width: 100%; }
         }
     </style>
+
+    <script>
+      const assistantID = "61d207ff-2f1c-4026-8177-009d48fed794"; 
+      const publicAPIKey = "6312920d-cbf7-4135-84b4-a860a296692b"; 
+
+      (function (d, s, id) {
+        var js, vjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+        js.defer = true;
+        js.onload = function () {
+          window.vapiSDK.run({
+            apiKey: publicAPIKey,
+            assistant: assistantID,
+            config: { 
+                mode: "voice",
+                showConversation: true,
+                buttonText: "TALK WITH AI" // This puts the text directly inside the Vapi button
+            }
+          });
+        };
+        vjs.parentNode.insertBefore(js, vjs);
+      })(document, "script", "vapi-script");
+    </script>
 </head>
 <body>
 
@@ -101,7 +115,7 @@
         <div class="content">
             <span class="brand-name">Iron Haven Fitness</span>
             <h1>24/7 AI <br>Receptionist</h1>
-            <p>Experience the next generation of gym management. Our AI handles your leads while you handle the heavy lifting.</p>
+            <p>Our AI Concierge is ready to help. Click the button in the corner to book your tour or ask about our membership plans.</p>
         </div>
 
         <div class="form-container">
@@ -114,53 +128,6 @@
             </form>
         </div>
     </div>
-
-    <div id="custom-ai-btn" onclick="toggleVapi()">
-        <span id="btn-text">Talk with AI</span>
-    </div>
-
-    <script>
-      var vapiInstance = null;
-      const assistantID = "61d207ff-2f1c-4026-8177-009d48fed794"; 
-      const publicAPIKey = "6312920d-cbf7-4135-84b4-a860a296692b"; 
-
-      (function (d, s, id) {
-        var js, vjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
-        js.defer = true;
-        js.onload = function () {
-          // Initialize Vapi but keep it silent until button click
-          vapiInstance = window.vapiSDK.run({
-            apiKey: publicAPIKey,
-            assistant: assistantID,
-            config: { 
-                mode: "voice",
-                showConversation: true 
-            }
-          });
-        };
-        vjs.parentNode.insertBefore(js, vjs);
-      })(document, "script", "vapi-script");
-
-      function toggleVapi() {
-        const btnText = document.getElementById('btn-text');
-        
-        if (vapiInstance) {
-            // This is the direct command to show the window from your screenshot
-            vapiInstance.openConversation();
-        } else {
-            btnText.innerText = "Loading AI...";
-            setTimeout(() => { 
-                if(vapiInstance) {
-                    vapiInstance.openConversation();
-                    btnText.innerText = "Talk with AI";
-                }
-            }, 2000);
-        }
-      }
-    </script>
 
 </body>
 </html>
