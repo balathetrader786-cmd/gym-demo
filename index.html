@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,21 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iron Haven AI</title>
     <script src="https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js"></script>
-    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
         body { background: #000; color: #fff; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .hero { position: absolute; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,0.8), #000), url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070'); background-size: cover; z-index: -1; }
         .box { text-align: center; }
-        h1 { font-size: 3rem; margin-bottom: 20px; }
+        h1 { font-size: 3.5rem; margin-bottom: 20px; font-weight: 900; text-transform: uppercase; }
         
-        /* THE BUTTON */
         #sam-btn {
             background: #00ffcc; color: #000; border: none; padding: 25px 50px;
             font-size: 1.5rem; font-weight: bold; border-radius: 50px; cursor: pointer;
-            box-shadow: 0 0 30px rgba(0, 255, 204, 0.5);
+            box-shadow: 0 0 30px rgba(0, 255, 204, 0.5); transition: 0.3s;
         }
-        /* HIDE THE BROKEN OVERLAY */
+        #sam-btn:hover { transform: scale(1.05); background: #05faba; }
         .vapi-btn { display: none !important; }
     </style>
 </head>
@@ -36,21 +33,24 @@
             const btn = document.getElementById("sam-btn");
             btn.innerText = "CONNECTING...";
 
+            if (!window.vapiSDK) {
+                alert("AI still loading, wait 2 seconds.");
+                btn.innerText = "TALK TO SAM";
+                return;
+            }
+
             try {
-                // 2. FORCE INITIALIZE ON CLICK
                 const vapi = window.vapiSDK.run({
                     apiKey: "6312920d-cbf7-4135-84b4-a860a296692b",
                     assistant: "61d207ff-2f1c-4026-8177-009d48fed794"
                 });
 
-                // 3. WAKE UP THE MIC
                 await vapi.start();
-                btn.innerText = "ACTIVE";
+                btn.innerText = "SAM IS LIVE";
             } catch (err) {
                 console.error(err);
                 btn.innerText = "TRY AGAIN";
-                // FORCE THE BROWSER TO SHOW PERMISSION
-                alert("Microphone blocked! Please click the 'Lock' icon in your URL bar and set Microphone to ALLOW.");
+                alert("Microphone denied. Please refresh and click 'Allow' at the top!");
             }
         }
     </script>
