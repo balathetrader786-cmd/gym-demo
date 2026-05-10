@@ -3,78 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iron Haven | AI Receptionist</title>
+    <title>Iron Haven Fitness | AI Receptionist</title>
+    
+    <link rel="icon" href="https://www.tmplclubs.com/favicon.ico">
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body { 
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
-                        url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop'); 
+        /* RESET & BASE STYLES */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
+        body { background: #000; color: #fff; overflow-x: hidden; }
+
+        /* HERO SECTION LAYOUT */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100vh;
+            padding: 0 8%;
+            position: relative;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), 
+                        url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
-            background-attachment: fixed;
-            color: #ffffff; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            height: 100vh; 
         }
 
-        .overlay-card { 
-            max-width: 550px; 
-            padding: 50px; 
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 30px; 
-            text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        .logo-text {
+        /* LEFT CONTENT (Text & Button) */
+        .content { flex: 1; max-width: 50%; }
+        .logo { font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 50px; display: block; }
+        h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 30px; }
+        p { font-size: 1.2rem; color: #ccc; line-height: 1.6; margin-bottom: 40px; max-width: 90%; }
+        .cta-main {
+            background: #fff;
+            color: #000;
+            padding: 15px 30px;
             text-transform: uppercase;
-            letter-spacing: 4px;
-            font-size: 0.9rem;
-            color: #00ffcc;
-            margin-bottom: 20px;
-            display: block;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
         }
 
-        h1 { 
-            font-size: 3rem;
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 20px; 
+        /* RIGHT CONTENT (Lead Form) */
+        .lead-form-container {
+            flex: 0 0 420px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            text-align: left;
         }
-
-        p { 
-            color: #d1d1d1; 
-            font-size: 1.1rem;
-            line-height: 1.6; 
-            margin-bottom: 30px;
+        .lead-form-container h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 25px; }
+        .form-group { margin-bottom: 20px; }
+        input {
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border-radius: 5px;
+            font-size: 1rem;
         }
-
-        .cta-text { 
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
             background: #00ffcc;
             color: #000;
-            padding: 12px 24px;
-            border-radius: 50px;
+            border: none;
+            border-radius: 5px;
             font-weight: 700;
-            display: inline-block;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        /* VAPI AI INDICATOR (replicates the Duda UI from the image) */
+        #vapi-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            background: #000;
+            border: 1px solid #00ffcc;
+            border-radius: 50px;
+            padding: 10px 20px;
+            z-index: 9999;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
             animation: pulse 2s infinite;
+        }
+        #vapi-indicator svg {
+            width: 20px;
+            height: 20px;
+            stroke: #00ffcc;
+            margin-right: 10px;
+        }
+        #vapi-indicator span {
+            color: #00ffcc;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
         }
 
         @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 255, 204, 0.7); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(0, 255, 204, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 255, 204, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 204, 0.5); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 255, 204, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 204, 0); }
+        }
+
+        /* MOBILE RESPONSIVENESS */
+        @media (max-width: 900px) {
+            .hero { flex-direction: column; padding: 100px 5%; justify-content: center; height: auto; min-height: 100vh; text-align: center; }
+            .content { max-width: 100%; margin-bottom: 50px; }
+            h1 { font-size: 2.5rem; }
+            .content p { max-width: 100%; margin: 0 auto 40px; }
+            .lead-form-container { flex: 1 1 100%; width: 100%; }
         }
     </style>
 
     <script>
       var vapiInstance = null;
+      // YOUR IDs FROM PREVIOUS CHATS
       const assistant = "61d207ff-2f1c-4026-8177-009d48fed794"; 
       const apiKey = "6312920d-cbf7-4135-84b4-a860a296692b"; 
 
@@ -96,11 +144,32 @@
     </script>
 </head>
 <body>
-    <div class="overlay-card">
-        <span class="logo-text">Iron Haven Fitness</span>
-        <h1>Meet Sam</h1>
-        <p>Our 24/7 AI Receptionist. While our trainers are on the floor, Sam is here to book your tours and answer your membership questions instantly.</p>
-        <div class="cta-text">Click the icon to start call</div>
+    <div class="hero">
+        <div class="content">
+            <span class="logo">Iron Haven Fitness</span>
+            <h1>24/7 AI Receptionist</h1>
+            <p>Our trainers are busy on the floor. While they are focusing on results, Sam is here to answer membership questions and book your club tours instantly, day or night.</p>
+            <a href="#form" class="cta-main">Schedule A Tour</a>
+        </div>
+
+        <div class="lead-form-container" id="form">
+            <h2>Get Started</h2>
+            <form action="#" method="post">
+                <div class="form-group"><input type="text" placeholder="Full Name" required></div>
+                <div class="form-group"><input type="tel" placeholder="Phone Number" required></div>
+                <div class="form-group"><input type="email" placeholder="Email Address" required></div>
+                <button type="submit" class="submit-btn">Request Information</button>
+            </form>
+        </div>
     </div>
+
+    <div id="vapi-indicator" onclick="if(vapiInstance) vapiInstance.start();">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path>
+            <path d="M12 16v-4m0 0V8m0 4h4"></path>
+        </svg>
+        <span>Ask AI</span>
+    </div>
+
 </body>
 </html>
