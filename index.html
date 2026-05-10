@@ -8,6 +8,7 @@
     <link rel="icon" href="https://www.tmplclubs.com/favicon.ico">
 
     <style>
+        /* BASE DESIGN */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #000; color: #fff; overflow-x: hidden; }
 
@@ -29,10 +30,11 @@
             padding: 40px; border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        /* FORCING THE AI BUTTON TO BE SQUARE AND REMOVE CALL ICON */
-        /* This targets the official Vapi button directly */
+        /* STYLING THE NATIVE AI BUTTON 
+           This forces the AI's own button to match your Duda screenshot.
+        */
         .vapi-btn {
-            border-radius: 4px !important; /* Square edges like Duda */
+            border-radius: 6px !important; 
             background-color: #000 !important;
             border: 2px solid #00ffcc !important;
             bottom: 30px !important;
@@ -41,26 +43,27 @@
             height: auto !important;
             padding: 12px 24px !important;
             box-shadow: 0 0 15px rgba(0, 255, 204, 0.4) !important;
+            cursor: pointer !important;
         }
 
-        /* Removes the phone icon so it is "just AI" */
-        .vapi-btn-icon, .vapi-btn svg {
-            display: none !important;
-        }
+        /* Removes the phone icon so it looks like a clean web button */
+        .vapi-btn-icon, .vapi-btn svg { display: none !important; }
 
-        /* Styles the "TALK WITH AI" text */
+        /* Styles the "TALK WITH AI" text inside the button */
         .vapi-btn-text {
             color: #00ffcc !important;
             font-weight: 800 !important;
-            font-size: 0.9rem !important;
+            font-size: 0.85rem !important;
             text-transform: uppercase !important;
-            letter-spacing: 1px !important;
+            letter-spacing: 1.5px !important;
             margin: 0 !important;
         }
 
         @media (max-width: 1000px) {
             .hero { flex-direction: column; padding: 100px 5%; text-align: center; height: auto; }
             .content { max-width: 100%; margin-bottom: 50px; }
+            h1 { font-size: 2.8rem; }
+            .form-container { width: 100%; }
         }
     </style>
 </head>
@@ -69,14 +72,15 @@
     <div class="hero">
         <div class="content">
             <h1>24/7 AI <br>Receptionist</h1>
-            <p>Our AI Concierge is ready to help. Click the button in the corner to book your tour or ask about membership.</p>
+            <p>Our AI Concierge Sam is ready to help. Click the button in the corner to book your tour or ask about our membership plans via voice.</p>
         </div>
 
         <div class="form-container">
-            <h2 style="margin-bottom:20px;">Get Started</h2>
+            <h2 style="margin-bottom:20px; font-size: 1.8rem;">Get Started</h2>
             <form onsubmit="event.preventDefault();">
-                <input type="text" placeholder="Full Name" style="width:100%; padding:15px; margin-bottom:15px; border-radius:5px; border:1px solid #444; background:transparent; color:#fff;">
-                <button type="submit" style="width:100%; padding:15px; background:#00ffcc; color:#000; font-weight:bold; border:none; border-radius:4px; cursor:pointer;">REQUEST INFO</button>
+                <input type="text" placeholder="Full Name" style="width:100%; padding:15px; margin-bottom:15px; border-radius:5px; border:1px solid #444; background:rgba(255,255,255,0.05); color:#fff;">
+                <input type="tel" placeholder="Phone Number" style="width:100%; padding:15px; margin-bottom:15px; border-radius:5px; border:1px solid #444; background:rgba(255,255,255,0.05); color:#fff;">
+                <button type="submit" style="width:100%; padding:16px; background:#00ffcc; color:#000; font-weight:800; border:none; border-radius:5px; cursor:pointer; text-transform: uppercase;">Request Information</button>
             </form>
         </div>
     </div>
@@ -97,8 +101,8 @@
             assistant: assistantID,
             config: { 
                 mode: "voice",
-                showConversation: true, // Opens the window inside the page
-                buttonText: "TALK WITH AI" // The label for your button
+                showConversation: true, // This enables the Duda-style pop-out window
+                buttonText: "TALK WITH AI" // The text that will appear in your custom button
             }
           });
         };
