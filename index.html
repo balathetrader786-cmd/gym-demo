@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iron Haven AI</title>
+    <title>Iron Haven AI | Fixed</title>
     <script src="https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
@@ -12,12 +12,13 @@
         .box { text-align: center; }
         h1 { font-size: 3.5rem; margin-bottom: 20px; font-weight: 900; text-transform: uppercase; }
         
+        /* CLEAN NEON BUTTON */
         #sam-btn {
             background: #00ffcc; color: #000; border: none; padding: 25px 50px;
             font-size: 1.5rem; font-weight: bold; border-radius: 50px; cursor: pointer;
             box-shadow: 0 0 30px rgba(0, 255, 204, 0.5); transition: 0.3s;
         }
-        #sam-btn:hover { transform: scale(1.05); background: #05faba; }
+        #sam-btn:active { transform: scale(0.95); }
         .vapi-btn { display: none !important; }
     </style>
 </head>
@@ -34,12 +35,13 @@
             btn.innerText = "CONNECTING...";
 
             if (!window.vapiSDK) {
-                alert("AI still loading, wait 2 seconds.");
-                btn.innerText = "TALK TO SAM";
+                btn.innerText = "LOADING AI...";
+                setTimeout(startSam, 1000);
                 return;
             }
 
             try {
+                // RUN ON CLICK TO SATISFY BROWSER PERMISSIONS
                 const vapi = window.vapiSDK.run({
                     apiKey: "6312920d-cbf7-4135-84b4-a860a296692b",
                     assistant: "61d207ff-2f1c-4026-8177-009d48fed794"
@@ -50,7 +52,8 @@
             } catch (err) {
                 console.error(err);
                 btn.innerText = "TRY AGAIN";
-                alert("Microphone denied. Please refresh and click 'Allow' at the top!");
+                // FORCE THE USER TO SEE THE RELOAD REQUIREMENT
+                alert("Microphone denied. Please click the RELOAD button at the top of your browser!");
             }
         }
     </script>
