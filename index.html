@@ -3,26 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iron Haven AI | Final</title>
+    <title>Iron Haven AI | Instant Launch</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #000; color: #fff; overflow: hidden; display: flex; align-items: center; justify-content: center; height: 100vh; }
 
+        /* THE BACKGROUND IMAGE */
         .hero-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), 
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), 
                         url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop');
             background-size: cover; z-index: -1;
         }
 
-        /* THE BUTTON */
-        #sam-btn {
+        /* THE NEON BUTTON */
+        #sam-launcher {
             background: #000; border: 2px solid #00ffcc;
-            border-radius: 8px; padding: 18px 32px;
+            border-radius: 8px; padding: 18px 35px;
             cursor: pointer; display: flex; align-items: center; gap: 15px;
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
-            z-index: 9999;
+            box-shadow: 0 0 25px rgba(0, 255, 204, 0.4);
+            z-index: 9999; transition: transform 0.2s;
         }
+
+        #sam-launcher:active { transform: scale(0.95); }
 
         .dot { width: 12px; height: 12px; background: #00ffcc; border-radius: 50%; position: relative; }
         .dot::after {
@@ -32,7 +35,9 @@
 
         @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
         
-        span { color: #00ffcc; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
+        span { color: #00ffcc; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; font-size: 1.1rem; }
+        
+        /* HIDE THE BROKEN BAR */
         .vapi-btn { display: none !important; }
     </style>
 </head>
@@ -40,7 +45,7 @@
 
     <div class="hero-bg"></div>
 
-    <div id="sam-btn" onclick="startCallNow()">
+    <div id="sam-launcher" onclick="launchCall()">
         <div class="dot"></div>
         <span id="btn-text">Talk with Sam</span>
     </div>
@@ -48,43 +53,42 @@
     <script>
         const ASSISTANT_ID = "61d207ff-2f1c-4026-8177-009d48fed794";
         const API_KEY = "6312920d-cbf7-4135-84b4-a860a296692b";
-        let vapiInstance = null;
+        let sam = null;
 
-        // Load the SDK
-        (function(d, s, id) {
-            var js, vjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) return;
-            js = d.createElement(s); js.id = id;
-            js.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
-            js.onload = function() {
-                // Initialize Vapi immediately
-                vapiInstance = window.vapiSDK.run({
+        // Load the library instantly
+        (function() {
+            const s = document.createElement("script");
+            s.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+            s.onload = () => {
+                // Initialize silently in the background
+                sam = window.vapiSDK.run({
                     apiKey: API_KEY,
                     assistant: ASSISTANT_ID,
-                    config: { showConversation: true }
+                    config: { showConversation: true, brandColor: "#00ffcc" }
                 });
             };
-            vjs.parentNode.insertBefore(js, vjs);
-        }(document, 'script', 'vapi-script'));
+            document.head.appendChild(s);
+        })();
 
-        async function startCallNow() {
-            const btnText = document.getElementById("btn-text");
-
-            // If the SDK isn't loaded yet, show "Connecting" and check again in a moment
-            if (!window.vapiSDK || !vapiInstance) {
-                btnText.innerText = "Connecting...";
-                setTimeout(startCallNow, 400); 
+        // THE FORCE-START FUNCTION
+        async function launchCall() {
+            const text = document.getElementById("btn-text");
+            
+            if (!window.vapiSDK || !sam) {
+                text.innerText = "Connecting...";
+                setTimeout(launchCall, 300); // Check again every 300ms if script is slow
                 return;
             }
 
             try {
-                // Force the call to start
-                await vapiInstance.start(); 
-                vapiInstance.openConversation(); 
-                btnText.innerText = "Sam Active";
+                // 1. Force Open the UI
+                sam.openConversation(); 
+                // 2. Force Wake Up the Mic
+                await sam.start(); 
+                text.innerText = "Sam Active";
             } catch (err) {
-                console.error("Call failed:", err);
-                btnText.innerText = "Talk with Sam";
+                text.innerText = "Talk with Sam";
+                console.log("Waiting for mic permission...");
             }
         }
     </script>
