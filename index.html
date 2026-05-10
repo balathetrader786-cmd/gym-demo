@@ -35,7 +35,7 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        /* DUDA-STYLE AI BUTTON */
+        /* DUDA-STYLE AI BUTTON (Matches your Screenshot exactly) */
         #ai-trigger {
             position: fixed;
             bottom: 30px;
@@ -111,16 +111,7 @@
       const assistant = "61d207ff-2f1c-4026-8177-009d48fed794"; 
       const apiKey = "6312920d-cbf7-4135-84b4-a860a296692b"; 
 
-      // Function to trigger the window
-      function openSam() {
-          if (vapiInstance) {
-              vapiInstance.openConversation(); 
-          } else {
-              alert("AI is still loading, please wait a moment.");
-          }
-      }
-
-      // Load Script
+      // Load Vapi Script
       (function (d, s, id) {
         var js, vjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;
@@ -133,15 +124,24 @@
             assistant: assistant,
             config: { 
                 mode: "voice", 
-                showConversation: true 
+                showConversation: true // Matches the Duda Chatbox
             }
           });
         };
         vjs.parentNode.insertBefore(js, vjs);
       })(document, "script", "vapi-script");
 
-      // BIND CLICK EVENT DIRECTLY
-      document.getElementById('ai-trigger').onclick = openSam;
+      // THE ULTIMATE FIX: Direct interaction check
+      document.getElementById('ai-trigger').addEventListener('click', function() {
+          if (vapiInstance) {
+              // Try to start the call directly first
+              vapiInstance.start(); 
+              // Then show the conversation box for the "Duda" look
+              vapiInstance.openConversation(); 
+          } else {
+              alert("Wait 2 seconds and try again—Sam is still loading!");
+          }
+      });
     </script>
 </body>
 </html>
