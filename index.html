@@ -9,7 +9,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #000; color: #fff; overflow: hidden; }
 
-        /* GYM HERO SECTION */
         .hero {
             display: flex; align-items: center; justify-content: space-between;
             height: 100vh; padding: 0 8%;
@@ -28,7 +27,7 @@
             padding: 35px; border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* THE CUSTOM "TALK WITH SAM" BUTTON */
+        /* MATCHING YOUR DESIGN */
         #sam-trigger {
             position: fixed; bottom: 30px; right: 30px;
             background: #000; border: 2px solid #00ffcc;
@@ -36,10 +35,7 @@
             cursor: pointer; z-index: 9999;
             display: flex; align-items: center; gap: 12px;
             box-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
-            transition: 0.3s;
         }
-
-        #sam-trigger:hover { transform: translateY(-3px); box-shadow: 0 0 30px rgba(0, 255, 204, 0.6); }
 
         .pulse-dot {
             width: 12px; height: 12px; background: #00ffcc;
@@ -58,7 +54,7 @@
 
         #sam-trigger span { color: #00ffcc; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; }
 
-        /* HIDE THE BROKEN BLANK VAPI BUTTON */
+        /* HIDE NATIVE BUTTONS */
         .vapi-btn { display: none !important; }
 
         @media (max-width: 1000px) {
@@ -73,17 +69,17 @@
     <div class="hero">
         <div class="content">
             <h1>Iron Haven AI <br>Receptionist</h1>
-            <p>Sam is live and ready to handle your bookings and membership questions instantly via voice. Click below to start the call.</p>
+            <p>Sam is live. Book a tour or ask about pricing instantly via voice.</p>
         </div>
 
         <div class="form-box">
             <h2 style="margin-bottom:20px;">Get Started</h2>
-            <input type="text" placeholder="Full Name" style="width:100%; padding:14px; margin-bottom:12px; background:rgba(255,255,255,0.08); border:none; border-radius:6px; color:#fff;">
-            <button style="width:100%; padding:15px; background:#00ffcc; color:#000; font-weight:900; border:none; border-radius:6px; cursor:pointer; text-transform: uppercase;">Request Info</button>
+            <input type="text" placeholder="Name" style="width:100%; padding:14px; margin-bottom:12px; background:rgba(255,255,255,0.08); border:none; border-radius:6px; color:#fff;">
+            <button style="width:100%; padding:15px; background:#00ffcc; color:#000; font-weight:900; border:none; border-radius:6px; cursor:pointer;">REQUEST INFO</button>
         </div>
     </div>
 
-    <div id="sam-trigger" onclick="launchCall()">
+    <div id="sam-trigger" onclick="startCall()">
         <div class="pulse-dot"></div>
         <span>Talk with Sam</span>
     </div>
@@ -93,7 +89,6 @@
       const assistant = "61d207ff-2f1c-4026-8177-009d48fed794"; 
       const apiKey = "6312920d-cbf7-4135-84b4-a860a296692b"; 
 
-      // Load the script normally (no defer) to ensure it's ready
       (function (d, s, id) {
         var js, vjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;
@@ -103,23 +98,22 @@
           vapi = window.vapiSDK.run({
             apiKey: apiKey,
             assistant: assistant,
-            config: { 
-                showConversation: true, // Forces the call window
-                brandColor: "#00ffcc"
-            }
+            config: { showConversation: true, brandColor: "#00ffcc" }
           });
         };
         vjs.parentNode.insertBefore(js, vjs);
       })(document, "script", "vapi-script");
 
-      // THE KILL-HEADACHE FUNCTION
-      function launchCall() {
+      async function startCall() {
           if (vapi) {
-              console.log("Starting Sam...");
-              vapi.openConversation(); // Opens the white UI window
-              vapi.start();           // Activates the microphone immediately
-          } else {
-              alert("Sam is still initializing. Give it 2 seconds!");
+              try {
+                  // This is the key: We try to start the audio session directly
+                  await vapi.start(); 
+                  vapi.openConversation();
+              } catch (e) {
+                  console.error("Mic access denied or error:", e);
+                  alert("Please allow Microphone access to talk with Sam!");
+              }
           }
       }
     </script>
