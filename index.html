@@ -1,36 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Iron Haven Final</title>
-    <script src="https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js"></script>
-    <style>
-        body { background: #000; color: #fff; height: 100vh; display: flex; align-items: center; justify-content: center; font-family: sans-serif; text-align: center; }
-        #sam-btn { background: #00ffcc; border: none; padding: 30px 60px; font-size: 1.5rem; font-weight: bold; border-radius: 50px; cursor: pointer; }
-        .vapi-btn { display: none !important; }
-    </style>
+    <title>Final Sam Test</title>
 </head>
 <body>
-    <div>
-        <h1 style="margin-bottom: 20px;">IRON HAVEN</h1>
-        <button id="sam-btn" onclick="go()">START CALL</button>
-    </div>
-
+    <h1>Testing Sam...</h1>
     <script>
-        async function go() {
-            const btn = document.getElementById("sam-btn");
-            btn.innerText = "CONNECTING...";
-            try {
-                const v = window.vapiSDK.run({
-                    apiKey: "6312920d-cbf7-4135-84b4-a860a296692b",
-                    assistant: "61d207ff-2f1c-4026-8177-009d48fed794"
-                });
-                await v.start();
-                btn.innerText = "LIVE";
-            } catch (e) {
-                btn.innerText = "DENIED - RESET MIC";
-                alert("STILL BLOCKED: Click the LOCK icon in your URL bar, RESET permissions, and RELOAD the page.");
-            }
-        }
+      var vapiInstance = null;
+      const assistant = "61d207ff-2f1c-4026-8177-009d48fed794"; 
+      const apiKey = "6312920d-cbf7-4135-84b4-a860a296692b"; 
+
+      (function(d, s, id) {
+        var js, vjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+        js.defer = true;
+        vjs.parentNode.insertBefore(js, vjs);
+
+        js.onload = function() {
+          vapiInstance = window.vapiSDK.run({
+            apiKey: apiKey,
+            assistant: assistant,
+            config: {
+              position: "bottom-right",
+            },
+          });
+        };
+      })(document, "script", "vapi-sdk");
     </script>
 </body>
 </html>
