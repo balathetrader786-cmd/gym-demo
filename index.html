@@ -19,7 +19,7 @@
 
         .content { flex: 1; max-width: 55%; }
         h1 { font-size: 3.5rem; font-weight: 900; line-height: 1.1; margin-bottom: 20px; }
-        p { font-size: 1.1rem; color: #aaa; margin-bottom: 30px; line-height: 1.6; }
+        p { font-size: 1.1rem; color: #aaa; margin-bottom: 30px; }
         
         .form-box {
             flex: 0 0 380px; background: rgba(255, 255, 255, 0.05);
@@ -27,7 +27,7 @@
             padding: 35px; border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* MATCHING YOUR DESIGN */
+        /* NEON BUTTON STYLE */
         #sam-trigger {
             position: fixed; bottom: 30px; right: 30px;
             background: #000; border: 2px solid #00ffcc;
@@ -41,7 +41,7 @@
             width: 12px; height: 12px; background: #00ffcc;
             border-radius: 50%; position: relative;
         }
-        .pulse-dot::after {
+        .pulse-dot.active::after {
             content: ""; position: absolute; width: 100%; height: 100%;
             background: #00ffcc; border-radius: 50%;
             animation: pulse-ring 1.5s infinite;
@@ -54,14 +54,7 @@
 
         #sam-trigger span { color: #00ffcc; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; }
 
-        /* HIDE NATIVE BUTTONS */
         .vapi-btn { display: none !important; }
-
-        @media (max-width: 1000px) {
-            .hero { flex-direction: column; padding: 80px 5%; text-align: center; height: auto; }
-            .content { max-width: 100%; margin-bottom: 40px; }
-            h1 { font-size: 2.5rem; }
-        }
     </style>
 </head>
 <body>
@@ -79,13 +72,14 @@
         </div>
     </div>
 
-    <div id="sam-trigger" onclick="startCall()">
-        <div class="pulse-dot"></div>
-        <span>Talk with Sam</span>
+    <div id="sam-trigger" onclick="handleSamClick()">
+        <div class="pulse-dot active" id="dot"></div>
+        <span id="btn-text">Talk with Sam</span>
     </div>
 
     <script>
       let vapi = null;
+      let isCallActive = false;
       const assistant = "61d207ff-2f1c-4026-8177-009d48fed794"; 
       const apiKey = "6312920d-cbf7-4135-84b4-a860a296692b"; 
 
@@ -100,19 +94,34 @@
             assistant: assistant,
             config: { showConversation: true, brandColor: "#00ffcc" }
           });
+
+          // Listen for when the call actually starts/ends
+          vapi.on('call-start', () => { 
+              isCallActive = true; 
+              document.getElementById('btn-text').innerText = "Sam is Listening...";
+          });
+          vapi.on('call-end', () => { 
+              isCallActive = false; 
+              document.getElementById('btn-text').innerText = "Talk with Sam";
+          });
         };
         vjs.parentNode.insertBefore(js, vjs);
       })(document, "script", "vapi-script");
 
-      async function startCall() {
-          if (vapi) {
+      async function handleSamClick() {
+          if (!vapi) return;
+
+          if (isCallActive) {
+              // If call is already on, just open the window
+              vapi.openConversation();
+          } else {
+              // If call is off, start it (this triggers the mic permission)
               try {
-                  // This is the key: We try to start the audio session directly
-                  await vapi.start(); 
+                  await vapi.start();
                   vapi.openConversation();
               } catch (e) {
-                  console.error("Mic access denied or error:", e);
-                  alert("Please allow Microphone access to talk with Sam!");
+                  // Only alert if the user explicitly blocks the mic
+                  console.error(e);
               }
           }
       }
