@@ -1,9 +1,12 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iron Haven AI | Final</title>
+    <title>Iron Haven AI | Instant-On</title>
+    <script src="https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js"></script>
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #000; color: #fff; overflow: hidden; height: 100vh; display: flex; align-items: center; justify-content: center; }
@@ -13,58 +16,52 @@
                         url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop');
             background-size: cover; z-index: -1;
         }
-        .content { text-align: center; z-index: 10; }
-        h1 { font-size: 4rem; text-transform: uppercase; margin-bottom: 10px; }
-        p { color: #aaa; margin-bottom: 30px; font-size: 1.1rem; }
-        
-        /* SIMPLE NEON BUTTON */
+        .content { text-align: center; }
         #sam-btn {
-            background: #00ffcc; color: #000; border: none;
-            padding: 20px 40px; border-radius: 8px; font-size: 1.2rem;
-            font-weight: 900; cursor: pointer; text-transform: uppercase;
-            box-shadow: 0 0 30px rgba(0, 255, 204, 0.4);
+            background: #00ffcc; color: #000; border: none; padding: 22px 45px;
+            border-radius: 12px; font-size: 1.4rem; font-weight: 900;
+            cursor: pointer; text-transform: uppercase; box-shadow: 0 0 30px rgba(0, 255, 204, 0.5);
         }
-        #sam-btn:active { transform: scale(0.98); }
         .vapi-btn { display: none !important; }
     </style>
 </head>
 <body>
     <div class="bg"></div>
     <div class="content">
-        <h1>Iron Haven</h1>
-        <p>Talk to Sam to book your tour instantly.</p>
-        <button id="sam-btn" onclick="startCall()">Talk with Sam</button>
+        <h1 style="font-size: 4rem; margin-bottom: 20px;">IRON HAVEN</h1>
+        <button id="sam-btn" onclick="startSamNow()">Talk with Sam</button>
     </div>
 
     <script>
-        // 1. WE ONLY LOAD THE SCRIPT - WE DON'T RUN ANYTHING YET
-        const s = document.createElement("script");
-        s.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
-        document.head.appendChild(s);
+        let vapi = null;
 
-        async function startCall() {
+        async function startSamNow() {
             const btn = document.getElementById("sam-btn");
             
+            // Check if SDK is present
             if (!window.vapiSDK) {
-                btn.innerText = "LOADING...";
-                setTimeout(startCall, 500);
+                btn.innerText = "Connecting...";
+                setTimeout(startSamNow, 300);
                 return;
             }
 
-            // 2. THE HANDSHAKE ONLY HAPPENS ON THE CLICK
-            const vapi = window.vapiSDK.run({
-                apiKey: "6312920d-cbf7-4135-84b4-a860a296692b",
-                assistant: "61d207ff-2f1c-4026-8177-009d48fed794",
-                config: { showConversation: true }
-            });
+            // Start only when clicked to avoid browser blocks
+            if (!vapi) {
+                vapi = window.vapiSDK.run({
+                    apiKey: "6312920d-cbf7-4135-84b4-a860a296692b",
+                    assistant: "61d207ff-2f1c-4026-8177-009d48fed794",
+                    config: { showConversation: true }
+                });
+            }
 
             try {
-                btn.innerText = "CONNECTING...";
-                await vapi.start(); // THIS TRIGGERS THE BROWSER MIC PROMPT
+                btn.innerText = "WAKING UP...";
+                await vapi.start(); // Direct user-triggered mic request
                 vapi.openConversation();
                 btn.innerText = "SAM IS LIVE";
             } catch (e) {
-                btn.innerText = "TRY AGAIN";
+                btn.innerText = "ERROR - TRY AGAIN";
+                console.error(e);
             }
         }
     </script>
