@@ -59,22 +59,24 @@
             cursor: pointer;
         }
 
-        /* NEW CUSTOM AI BUTTON (NO CALL ICON) */
+        /* SQUARE AI BUTTON (Duda Style) */
         #custom-ai-btn {
             position: fixed;
             bottom: 30px;
             right: 30px;
             background: #000;
             border: 2px solid #00ffcc;
-            border-radius: 8px; /* Square edges like the Duda screenshot */
+            border-radius: 4px;
             padding: 12px 24px;
-            z-index: 9999;
+            z-index: 99999;
             cursor: pointer;
             box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.2s ease;
         }
+        #custom-ai-btn:active { transform: scale(0.95); }
         #custom-ai-btn span {
             color: #00ffcc;
             font-weight: 800;
@@ -83,8 +85,8 @@
             letter-spacing: 1px;
         }
 
-        /* Hide the default Vapi circular button so only our custom one shows */
-        .vapi-btn { display: none !important; }
+        /* FORCE HIDE DEFAULT VAPI ICON */
+        .vapi-btn, [class*="vapi-"] { display: none !important; visibility: hidden !important; }
 
         @media (max-width: 1000px) {
             .hero { flex-direction: column; height: auto; padding: 100px 5%; text-align: center; }
@@ -92,40 +94,6 @@
             .form-container { width: 100%; }
         }
     </style>
-
-    <script>
-      var vapiInstance = null;
-      const assistantID = "61d207ff-2f1c-4026-8177-009d48fed794"; 
-      const publicAPIKey = "6312920d-cbf7-4135-84b4-a860a296692b"; 
-
-      (function (d, s, id) {
-        var js, vjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
-        js.defer = true;
-        js.onload = function () {
-          vapiInstance = window.vapiSDK.run({
-            apiKey: publicAPIKey,
-            assistant: assistantID,
-            config: { 
-                mode: "voice",
-                showConversation: true
-            }
-          });
-        };
-        vjs.parentNode.insertBefore(js, vjs);
-      })(document, "script", "vapi-script");
-
-      // This function manually opens the Vapi Window
-      function startAiCall() {
-        if (vapiInstance) {
-          vapiInstance.openConversation();
-        } else {
-          console.log("Vapi not loaded yet");
-        }
-      }
-    </script>
 </head>
 <body>
 
@@ -133,7 +101,7 @@
         <div class="content">
             <span class="brand-name">Iron Haven Fitness</span>
             <h1>24/7 AI <br>Receptionist</h1>
-            <p>Sam handles your tour bookings and membership questions instantly. Click the AI button to experience the future of gym management.</p>
+            <p>Experience the next generation of gym management. Our AI handles your leads while you handle the heavy lifting.</p>
         </div>
 
         <div class="form-container">
@@ -147,9 +115,52 @@
         </div>
     </div>
 
-    <div id="custom-ai-btn" onclick="startAiCall()">
-        <span>Talk with AI</span>
+    <div id="custom-ai-btn" onclick="toggleVapi()">
+        <span id="btn-text">Talk with AI</span>
     </div>
+
+    <script>
+      var vapiInstance = null;
+      const assistantID = "61d207ff-2f1c-4026-8177-009d48fed794"; 
+      const publicAPIKey = "6312920d-cbf7-4135-84b4-a860a296692b"; 
+
+      (function (d, s, id) {
+        var js, vjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+        js.defer = true;
+        js.onload = function () {
+          // Initialize Vapi but keep it silent until button click
+          vapiInstance = window.vapiSDK.run({
+            apiKey: publicAPIKey,
+            assistant: assistantID,
+            config: { 
+                mode: "voice",
+                showConversation: true 
+            }
+          });
+        };
+        vjs.parentNode.insertBefore(js, vjs);
+      })(document, "script", "vapi-script");
+
+      function toggleVapi() {
+        const btnText = document.getElementById('btn-text');
+        
+        if (vapiInstance) {
+            // This is the direct command to show the window from your screenshot
+            vapiInstance.openConversation();
+        } else {
+            btnText.innerText = "Loading AI...";
+            setTimeout(() => { 
+                if(vapiInstance) {
+                    vapiInstance.openConversation();
+                    btnText.innerText = "Talk with AI";
+                }
+            }, 2000);
+        }
+      }
+    </script>
 
 </body>
 </html>
