@@ -35,22 +35,21 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        /* AI BUTTON STYLING (MATCHES YOUR PIC) */
-        #ai-voice-trigger {
+        /* DUDA-STYLE AI BUTTON (Matches Screenshot) */
+        #ai-trigger {
             position: fixed;
             bottom: 30px;
             right: 30px;
             background: #000;
             border: 2px solid #00ffcc;
             border-radius: 8px;
-            padding: 12px 24px;
-            z-index: 10000;
+            padding: 14px 24px;
+            z-index: 99999;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 12px;
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
-            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
         }
 
         .pulse-dot {
@@ -58,27 +57,28 @@
             width: 10px;
             background-color: #00ffcc;
             border-radius: 50%;
-            animation: pulse 1.5s infinite;
+            animation: pulse-glow 1.5s infinite;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 204, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0, 255, 204, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 204, 0); }
+        @keyframes pulse-glow {
+            0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(0, 255, 204, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(0, 255, 204, 0); }
+            100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(0, 255, 204, 0); }
         }
 
-        #ai-voice-trigger span {
+        #ai-trigger span {
             color: #00ffcc;
             font-weight: 800;
             font-size: 0.9rem;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        /* HIDDEN DEFAULT ICON */
-        .vapi-btn { display: none !important; visibility: hidden !important; }
+        /* HIDE THE DEFAULT VAPI PHONE ICON */
+        .vapi-btn, [class*="vapi-btn"] { display: none !important; visibility: hidden !important; }
 
         @media (max-width: 1000px) {
-            .hero { flex-direction: column; padding: 100px 5%; text-align: center; }
+            .hero { flex-direction: column; padding: 100px 5%; text-align: center; height: auto; }
             .content { max-width: 100%; margin-bottom: 50px; }
             h1 { font-size: 2.5rem; }
         }
@@ -89,41 +89,27 @@
     <div class="hero">
         <div class="content">
             <h1>24/7 AI <br>Receptionist</h1>
-            <p>Our AI Concierge is ready to help. Click the button in the corner to book your tour or ask about our membership plans.</p>
+            <p>Our AI Concierge is ready to help. Click the button in the corner to book your tour or ask about membership.</p>
         </div>
 
         <div class="form-container">
-            <h2>Get Started</h2>
+            <h2 style="margin-bottom:20px;">Get Started</h2>
             <form onsubmit="event.preventDefault();">
-                <input type="text" style="width:100%; padding:15px; margin:10px 0; border-radius:5px; border:1px solid #444; background:transparent; color:#fff;" placeholder="Full Name">
-                <button type="submit" style="width:100%; padding:15px; background:#00ffcc; font-weight:bold; border:none; border-radius:5px; cursor:pointer; color:#000;">REQUEST INFO</button>
+                <input type="text" placeholder="Full Name" style="width:100%; padding:15px; margin-bottom:15px; border-radius:5px; border:1px solid #444; background:transparent; color:#fff;">
+                <button type="submit" style="width:100%; padding:15px; background:#00ffcc; color:#000; font-weight:bold; border:none; border-radius:5px; cursor:pointer;">REQUEST INFO</button>
             </form>
         </div>
     </div>
 
-    <div id="ai-voice-trigger" onclick="safeOpenVapi()">
+    <div id="ai-trigger">
         <div class="pulse-dot"></div>
-        <span id="btn-label">Talk to Sam (AI)</span>
+        <span>Talk with AI</span>
     </div>
 
     <script>
       var vapiInstance = null;
       const assistant = "61d207ff-2f1c-4026-8177-009d48fed794"; 
       const apiKey = "6312920d-cbf7-4135-84b4-a860a296692b"; 
-
-      // Function to ensure the window opens correctly
-      function safeOpenVapi() {
-          const label = document.getElementById('btn-label');
-          if (vapiInstance) {
-              vapiInstance.openConversation();
-          } else {
-              label.innerText = "Waking up Sam...";
-              setTimeout(() => {
-                  if(vapiInstance) vapiInstance.openConversation();
-                  label.innerText = "Talk to Sam (AI)";
-              }, 2000);
-          }
-      }
 
       (function (d, s, id) {
         var js, vjs = d.getElementsByTagName(s)[0];
@@ -135,11 +121,23 @@
           vapiInstance = window.vapiSDK.run({
             apiKey: apiKey,
             assistant: assistant,
-            config: { mode: "voice", showConversation: true }
+            config: { 
+                mode: "voice", 
+                showConversation: true // This enables the Duda-style window
+            }
           });
         };
         vjs.parentNode.insertBefore(js, vjs);
       })(document, "script", "vapi-script");
+
+      // THE FIX: Direct Event Listener for the button
+      document.getElementById('ai-trigger').addEventListener('click', function() {
+          if (vapiInstance) {
+              vapiInstance.openConversation(); // Forces the small window to open inside the page
+          } else {
+              console.error("Vapi not loaded yet.");
+          }
+      });
     </script>
 </body>
 </html>
