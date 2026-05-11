@@ -1,37 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
+ 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iron Haven Fitness | AI Concierge</title>
-    
+ 
     <link rel="icon" href="https://www.tmplclubs.com/favicon.ico">
-
+ 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #000; color: #fff; overflow-x: hidden; }
-
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+ 
+        body {
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+ 
         .hero {
-            display: flex; align-items: center; justify-content: space-between;
-            height: 100vh; padding: 0 8%;
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), 
-                        url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover; background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100vh;
+            padding: 0 8%;
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9)),
+                url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
         }
-
-        .content { flex: 1; max-width: 50%; }
-        h1 { font-size: 3.8rem; font-weight: 800; line-height: 1.1; margin-bottom: 25px; }
-        p { font-size: 1.1rem; color: #d1d1d1; margin-bottom: 40px; }
-        
+ 
+        .content {
+            flex: 1;
+            max-width: 50%;
+        }
+ 
+        h1 {
+            font-size: 3.8rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 25px;
+        }
+ 
+        p {
+            font-size: 1.1rem;
+            color: #d1d1d1;
+            margin-bottom: 40px;
+        }
+ 
         .form-container {
-            flex: 0 0 400px; background: rgba(255, 255, 255, 0.07);
-            backdrop-filter: blur(12px); border-radius: 12px;
-            padding: 40px; border: 1px solid rgba(255, 255, 255, 0.15);
+            flex: 0 0 400px;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(12px);
+            border-radius: 12px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
-
+ 
         /* THE AI BUTTON - DUDA STYLE */
         .vapi-btn {
-            border-radius: 6px !important; 
+            border-radius: 6px !important;
             background-color: #000 !important;
             border: 2px solid #00ffcc !important;
             bottom: 30px !important;
@@ -41,10 +73,13 @@
             padding: 14px 28px !important;
             box-shadow: 0 0 20px rgba(0, 255, 204, 0.4) !important;
         }
-
+ 
         /* REMOVE THE PHONE ICON */
-        .vapi-btn-icon, .vapi-btn svg { display: none !important; }
-
+        .vapi-btn-icon,
+        .vapi-btn svg {
+            display: none !important;
+        }
+ 
         /* BUTTON TEXT */
         .vapi-btn-text {
             color: #00ffcc !important;
@@ -53,63 +88,141 @@
             text-transform: uppercase !important;
             letter-spacing: 1.5px !important;
         }
-
+ 
         /* STYLING THE CALL WINDOW (To avoid the "blank space") */
         /* This ensures the Sam window looks premium like your screenshot */
         :root {
             --vapi-brand-color: #00ffcc;
         }
-
+ 
         @media (max-width: 1000px) {
-            .hero { flex-direction: column; padding: 100px 5%; text-align: center; height: auto; }
-            .content { max-width: 100%; margin-bottom: 50px; }
+            .hero {
+                flex-direction: column;
+                padding: 100px 5%;
+                text-align: center;
+                height: auto;
+            }
+ 
+            .content {
+                max-width: 100%;
+                margin-bottom: 50px;
+            }
+        }
+ 
+        /* PREMIUM CALL BUTTON STYLING */
+        #vapi-support-btn {
+            position: fixed !important;
+            bottom: 30px !important;
+            left: 30px !important;
+            right: auto !important;
+            width: 65px !important;
+            height: 65px !important;
+            border-radius: 50% !important;
+            background: rgba(0, 0, 0, 0.7) !important;
+            backdrop-filter: blur(15px) !important;
+            border: 2px solid #00ffcc !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            z-index: 10000 !important;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.4) !important;
+            animation: pulse-glow 2s infinite ease-in-out;
+        }
+ 
+        #vapi-support-btn:hover {
+            transform: scale(1.1) translateY(-5px) !important;
+            background: rgba(0, 255, 204, 0.1) !important;
+            box-shadow: 0 0 35px rgba(0, 255, 204, 0.7) !important;
+        }
+ 
+        #vapi-icon-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+ 
+        #vapi-icon-container img {
+            width: 28px;
+            height: 28px;
+            /* Filter to turn the icon into #00ffcc */
+            filter: brightness(0) saturate(100%) invert(86%) sepia(85%) saturate(1518%) hue-rotate(107deg) brightness(103%) contrast(105%);
+        }
+ 
+        @keyframes pulse-glow {
+            0% {
+                box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+                transform: scale(1);
+            }
+ 
+            50% {
+                box-shadow: 0 0 30px rgba(0, 255, 204, 0.6);
+                transform: scale(1.05);
+            }
+ 
+            100% {
+                box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+                transform: scale(1);
+            }
         }
     </style>
 </head>
+ 
 <body>
-
+ 
     <div class="hero">
         <div class="content">
             <h1>24/7 AI <br>Receptionist</h1>
-            <p>Sam handles your bookings and membership questions instantly. Click the button to experience the future of gym management.</p>
+            <p>Sam handles your bookings and membership questions instantly. Click the button to experience the future
+                of gym management.</p>
         </div>
-
+ 
         <div class="form-container">
             <h2 style="margin-bottom:20px;">Get Started</h2>
             <form onsubmit="event.preventDefault();">
-                <input type="text" placeholder="Full Name" style="width:100%; padding:15px; margin-bottom:15px; border-radius:5px; border:1px solid #444; background:rgba(255,255,255,0.05); color:#fff;">
-                <button type="submit" style="width:100%; padding:16px; background:#00ffcc; color:#000; font-weight:800; border:none; border-radius:5px; cursor:pointer;">REQUEST INFO</button>
+                <input type="text" placeholder="Full Name"
+                    style="width:100%; padding:15px; margin-bottom:15px; border-radius:5px; border:1px solid #444; background:rgba(255,255,255,0.05); color:#fff;">
+                <button type="submit"
+                    style="width:100%; padding:16px; background:#00ffcc; color:#000; font-weight:800; border:none; border-radius:5px; cursor:pointer;">REQUEST
+                    INFO</button>
             </form>
         </div>
     </div>
-
+ 
     <script>
-      const assistantID = "61d207ff-2f1c-4026-8177-009d48fed794"; 
-      const publicAPIKey = "6312920d-cbf7-4135-84b4-a860a296692b"; 
-
-      (function (d, s, id) {
-        var js, vjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
-        js.defer = true;
-        js.onload = function () {
-          window.vapiSDK.run({
-            apiKey: publicAPIKey,
-            assistant: assistantID,
-            config: { 
-                mode: "voice",
-                showConversation: true,
-                buttonText: "Talk with Sam",
-                // ADDING THE CALL SCENARIO VISUALS
-                brandColor: "#00ffcc",
-                avatar: "https://cdn-icons-png.flaticon.com/512/4712/4712035.png" // AI Assistant Icon
-            }
-          });
-        };
-        vjs.parentNode.insertBefore(js, vjs);
-      })(document, "script", "vapi-script");
+        const assistantID = "61d207ff-2f1c-4026-8177-009d48fed794";
+        const publicAPIKey = "6312920d-cbf7-4135-84b4-a860a296692b";
+ 
+        (function (d, s, id) {
+            var js, vjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+            js.defer = true;
+            js.onload = function () {
+                window.vapiSDK.run({
+                    apiKey: publicAPIKey,
+                    assistant: assistantID,
+                    config: {
+                        mode: "voice",
+                        showConversation: true,
+                        buttonText: "Talk with Sam",
+                        // ADDING THE CALL SCENARIO VISUALS
+                        brandColor: "#00ffcc",
+                        avatar: "https://cdn-icons-png.flaticon.com/512/4712/4712035.png" // AI Assistant Icon
+                    }
+                });
+            };
+            vjs.parentNode.insertBefore(js, vjs);
+        })(document, "script", "vapi-script");
     </script>
-
+ 
+    <button id="vapi-support-btn" class="vapi-btn vapi-btn-is-idle vapi-btn-round" title="Have a quick question?">
+        <div id="vapi-icon-container">
+            <img src="https://unpkg.com/lucide-static@0.321.0/icons/phone.svg" alt="Icon">
+        </div>
+    </button>
 </body>
+ 
 </html>
